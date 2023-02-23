@@ -2,7 +2,7 @@ package com.example.goodweather.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Hourly(
+data class HourlyDTO(
     @SerializedName("relativehumidity_2m")
     val relativeHumidity2m: List<Int>,
     @SerializedName("temperature_2m")

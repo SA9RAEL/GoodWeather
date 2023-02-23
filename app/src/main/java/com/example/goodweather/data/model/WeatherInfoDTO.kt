@@ -2,17 +2,17 @@ package com.example.goodweather.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class WeatherInfo(
+data class WeatherInfoDTO(
     @SerializedName("current_weather")
-    val currentWeather: CurrentWeather,
+    val currentWeatherDTO: CurrentWeatherDTO,
     @SerializedName("elevation")
     val elevation: Double,
     @SerializedName("generationTime_ms")
     val generationTimeMs: Double,
     @SerializedName("hourly")
-    val hourly: Hourly,
+    val hourlyDTO: HourlyDTO,
     @SerializedName("hourly_units")
-    val hourlyUnits: HourlyUnits,
+    val hourlyUnitsDTO: HourlyUnitsDTO,
     @SerializedName("latitude")
     val latitude: Double,
     @SerializedName("longitude")

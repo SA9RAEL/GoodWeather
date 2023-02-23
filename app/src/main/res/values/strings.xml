@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GoodWeather</string>
+    <string name="title">Today</string>
+
 </resources>
