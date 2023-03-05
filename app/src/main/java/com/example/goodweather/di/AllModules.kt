@@ -9,7 +9,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 const val BASE_URL = "https://api.open-meteo.com/"
 
@@ -26,20 +25,20 @@ abstract class AllModules {
 
         @Provides
         @Reusable
-        fun provideHttpClient(): OkHttpClient {
+        fun provideHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
             return OkHttpClient.Builder()
                 .addInterceptor(
-                    httpLoggingInterceptor()
+                    httpLoggingInterceptor
                 )
                 .build()
         }
 
         @Provides
         @Reusable
-        fun provideRetrofit(): ForecastApiService = Retrofit.Builder()
+        fun provideRetrofit(httpClient: OkHttpClient): ForecastApiService = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(
-                provideHttpClient()
+                httpClient
             )
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())

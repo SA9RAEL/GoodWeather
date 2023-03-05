@@ -61,6 +61,17 @@ dependencies {
     kapt 'com.google.dagger:dagger-android-processor:2.44.2'
     kapt 'com.google.dagger:dagger-compiler:2.44.2'
 
+    //Moxy
+    implementation 'tech.schoolhelper:moxy-x:1.7.0'
+    implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
+    kapt 'tech.schoolhelper:moxy-x-compiler:1.7.0'
+
+    //Google Play Service Location
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    //ViewBindingPropertyDelegate reflection-free flavor
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-full:1.5.8'
+
     //Testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

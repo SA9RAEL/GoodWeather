@@ -7,17 +7,38 @@ import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val api: ForecastApiService
+    private val api: ForecastApiService,
 ) : WeatherRepository {
 
-    override fun getForecast(latitude: Double, longitude: Double): Single<WeatherInfoDTO> {
-        return api.getCurrentForecast(latitude = latitude, longitude = longitude)
+    override fun getForecast(
+        latitude: Double,
+        longitude: Double,
+        precipitation: String,
+        weatherCode: String,
+        startDate: String,
+        endDate: String
+    ): Single<WeatherInfoDTO> {
+        return api.getTodayForecast(
+            latitude = latitude,
+            longitude = longitude,
+            precipitation = precipitation,
+            weatherCode = weatherCode,
+            startDate = startDate,
+            endDate = endDate
+        )
     }
 
-    override fun getPastDaysForecast(
+    override fun getNextSixDaysForecast(
         latitude: Double,
-        longitude: Double
+        longitude: Double,
+        precipitation: String,
+        weatherCode: String,
     ): Single<List<WeatherInfoDTO>> {
-        return api.getLastTenDaysForecast(latitude = latitude, longitude = longitude)
+        return api.getNextSixDaysForecast(
+            latitude = latitude,
+            longitude = longitude,
+            precipitation = precipitation,
+            weatherCode = weatherCode
+        )
     }
 }
