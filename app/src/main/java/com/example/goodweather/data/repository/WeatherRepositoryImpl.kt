@@ -13,16 +13,12 @@ class WeatherRepositoryImpl @Inject constructor(
     override fun getForecast(
         latitude: Double,
         longitude: Double,
-        precipitation: String,
-        weatherCode: String,
         startDate: String,
         endDate: String
     ): Single<WeatherInfoDTO> {
         return api.getTodayForecast(
             latitude = latitude,
             longitude = longitude,
-            precipitation = precipitation,
-            weatherCode = weatherCode,
             startDate = startDate,
             endDate = endDate
         )
@@ -31,14 +27,10 @@ class WeatherRepositoryImpl @Inject constructor(
     override fun getNextSixDaysForecast(
         latitude: Double,
         longitude: Double,
-        precipitation: String,
-        weatherCode: String,
     ): Single<List<WeatherInfoDTO>> {
         return api.getNextSixDaysForecast(
             latitude = latitude,
-            longitude = longitude,
-            precipitation = precipitation,
-            weatherCode = weatherCode
+            longitude = longitude
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.goodweather.data.const
 
+const val BASE_URL = "https://api.open-meteo.com/"
 const val CLEAR_SKY = 0
 const val MAINLY_CLEAR = 1
 const val PARTLY_CLOUDY = 2
@@ -26,7 +27,3 @@ const val RAIN_SHOWERS_VIOLENT = 82
 const val SNOW_SHOWERS_SLIGHT = 85
 const val SNOW_SHOWERS_HEAVY = 8
 const val ERROR = "No internet connection"
-const val ACTION_START = "ACTION_START"
-const val ACTION_STOP = "ACTION_STOP"
-const val PRECIPITATION = "precipitation"
-const val WEATHER_CODE = "weathercode"

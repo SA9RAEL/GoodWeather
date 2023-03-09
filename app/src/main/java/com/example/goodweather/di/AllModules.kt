@@ -1,16 +1,19 @@
 package com.example.goodweather.di
 
+import android.location.LocationManager
+import com.example.goodweather.data.const.BASE_URL
+import com.example.goodweather.data.repository.WeatherRepositoryImpl
+import com.example.goodweather.domain.repository.WeatherRepository
 import com.example.goodweather.network.ForecastApiService
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-
-const val BASE_URL = "https://api.open-meteo.com/"
 
 @Module
 abstract class AllModules {
@@ -40,10 +43,22 @@ abstract class AllModules {
             .client(
                 httpClient
             )
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ForecastApiService::class.java)
+
+        @Provides
+        @Reusable
+        fun provideLocationManager(locationManager: LocationManager): LocationManager =
+            locationManager
+
+
     }
+
+    @Binds
+    abstract fun bindWeatherRepositoryImpl(
+        weatherRepositoryImpl: WeatherRepositoryImpl
+    ): WeatherRepository
 
 }

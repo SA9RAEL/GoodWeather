@@ -10,14 +10,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (supportActionBar != null) supportActionBar?.hide()
 
         if (savedInstanceState == null) {
-            val fragment = WeatherFragment()
-
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragment_container_view_tag, fragment)
+                .add(R.id.fragment_container_view_tag, WeatherFragment())
                 .commit()
         }
 
@@ -30,6 +27,6 @@ class MainActivity : AppCompatActivity() {
             0
         )
 
-
+        if (supportActionBar != null) supportActionBar?.hide()
     }
 }

@@ -2,79 +2,124 @@ package com.example.goodweather.presentation
 
 
 import android.Manifest
-import android.content.pm.PackageManager
-import android.location.LocationManager
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.widget.Toast
 import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.goodweather.R
+import com.example.goodweather.WeatherApplication
 import com.example.goodweather.data.const.ERROR
-import com.example.goodweather.data.const.PRECIPITATION
-import com.example.goodweather.data.const.WEATHER_CODE
+import com.example.goodweather.data.location.Location
 import com.example.goodweather.databinding.FragmentWeatherBinding
-import com.example.goodweather.domain.repository.WeatherRepository
 import com.example.goodweather.presentation.viewmodel.view.ForecastView
 import com.example.goodweather.presenter.WeatherPresenter
-import java.text.SimpleDateFormat
+import com.example.goodweather.presenter.WeatherPresenterFactory
+import com.tbruyelle.rxpermissions3.RxPermissions
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
-const val TAG = "TAG"
 
 class WeatherFragment : MvpAppCompatFragment(), ForecastView {
 
     private val binding: FragmentWeatherBinding by viewBinding(CreateMethod.INFLATE)
-    init {
-         showTodayForecast()
-         // showNextSixDaysForecast()
-    }
+
+    private var location: Location? = null
 
     @Inject
-    lateinit var repository: WeatherRepository
+    lateinit var weatherPresenterFactory: WeatherPresenterFactory
 
-    @InjectPresenter
-    lateinit var weatherPresenter: WeatherPresenter
+    private val weatherPresenter: WeatherPresenter by lazy {
+        weatherPresenterFactory.create()
+    }
 
-    private lateinit var locationManager: LocationManager
+    private val currentDate = LocalDateTime.now()
+    private val form = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
 
-    @ProvidePresenter
-    fun provideWeatherPresenter(): WeatherPresenter = WeatherPresenter(repository)
-
-    private val currentDate =
-        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).toString()
+    override fun onAttach(context: Context) {
+        (context.applicationContext as WeatherApplication).appComponent.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return binding.root
+    ): View = binding.root
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        showTodayForecast()
+        //showNextSixDaysForecast
     }
 
     override fun showTodayForecast() {
         binding.successContainer.visibility = View.VISIBLE
 
-        weatherPresenter.showForecast(
-            getLatitude() ?: 0.00,
-            getLongitude() ?: 0.00,
-            PRECIPITATION,
-            WEATHER_CODE,
-            currentDate,
-            currentDate
+        weatherPresenter.showTodayForecast(
+            location?.let { getCurrentLatitude(it) } ?: 55.7522,
+            location?.let { getCurrentLongitude(it) } ?: 37.6173,
+            form.format(currentDate),
+            form.format(currentDate)
         )
 
     }
 
     override fun showNextSixDaysForecast() {
-        TODO("Not yet implemented")
+        binding.successContainer.visibility = View.VISIBLE
+
+        weatherPresenter.showNextSixDaysForecast(
+            location?.let { getCurrentLatitude(it) } ?: 55.7522,
+            location?.let { getCurrentLongitude(it) } ?: 37.6173,
+        )
+    }
+
+    @SuppressLint("CheckResult")
+    fun getCurrentLatitude(location: Location): Double {
+        RxPermissions(this)
+            .request(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .subscribe { granted ->
+                if (granted) {
+                    location.getLastLatitude()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "No Location permissions",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+        return location.getLastLatitude() ?: 55.7522
+    }
+
+    @SuppressLint("CheckResult")
+    fun getCurrentLongitude(location: Location): Double {
+        RxPermissions(this)
+            .request(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            .subscribe { granted ->
+                if (granted) {
+                    location.getLastLongitude()
+                } else {
+                    Toast.makeText(requireContext(), "No Location permissions", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        return location.getLastLongitude() ?: 37.6173
     }
 
     override fun showError(message: String) =
@@ -90,31 +135,9 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
             errorTextView.text = getString(R.string.no_internet_connection)
         }
 
-
-    private fun getLatitude(): Double? = if (ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.latitude
-    } else {
-        throw Exception("Missing location permission")
-    }
-
-    private fun getLongitude(): Double? = if (ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.longitude
-    } else {
-        throw Exception("Missing location permission")
+    override fun onDestroyView() {
+        weatherPresenter.onDestroy()
+        super.onDestroyView()
     }
 
 }
