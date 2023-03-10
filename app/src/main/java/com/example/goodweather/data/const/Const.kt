@@ -27,3 +27,5 @@ const val RAIN_SHOWERS_VIOLENT = 82
 const val SNOW_SHOWERS_SLIGHT = 85
 const val SNOW_SHOWERS_HEAVY = 8
 const val ERROR = "No internet connection"
+const val DEFAULT_LATITUDE = 55.7522
+const val DEFAULT_LONGITUDE = 37.6173

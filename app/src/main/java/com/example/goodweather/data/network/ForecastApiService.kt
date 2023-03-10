@@ -1,4 +1,4 @@
-package com.example.goodweather.network
+package com.example.goodweather.data.network
 
 import com.example.goodweather.data.enums.QueryType
 import com.example.goodweather.data.model.WeatherInfoDTO

@@ -1,10 +1,11 @@
 package com.example.goodweather.di
 
-import android.location.LocationManager
 import com.example.goodweather.data.const.BASE_URL
+import com.example.goodweather.data.location.LocationDataSource
+import com.example.goodweather.data.location.LocationDataSourceImpl
+import com.example.goodweather.data.network.ForecastApiService
 import com.example.goodweather.data.repository.WeatherRepositoryImpl
 import com.example.goodweather.domain.repository.WeatherRepository
-import com.example.goodweather.network.ForecastApiService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -48,17 +49,16 @@ abstract class AllModules {
             .build()
             .create(ForecastApiService::class.java)
 
-        @Provides
-        @Reusable
-        fun provideLocationManager(locationManager: LocationManager): LocationManager =
-            locationManager
-
-
     }
 
     @Binds
     abstract fun bindWeatherRepositoryImpl(
         weatherRepositoryImpl: WeatherRepositoryImpl
     ): WeatherRepository
+
+    @Binds
+    abstract fun bindLocationDataSourceImpl(
+        locationDataSourceImpl: LocationDataSourceImpl
+    ): LocationDataSource
 
 }
