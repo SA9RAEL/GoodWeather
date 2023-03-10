@@ -15,15 +15,12 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.example.goodweather.R
 import com.example.goodweather.WeatherApplication
 import com.example.goodweather.data.const.ERROR
-import com.example.goodweather.data.location.Location
 import com.example.goodweather.databinding.FragmentWeatherBinding
+import com.example.goodweather.presentation.viewmodel.model.Weather
 import com.example.goodweather.presentation.viewmodel.view.ForecastView
 import com.example.goodweather.presenter.WeatherPresenter
 import com.example.goodweather.presenter.WeatherPresenterFactory
 import com.tbruyelle.rxpermissions3.RxPermissions
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
-import java.util.Locale
 import javax.inject.Inject
 
 
@@ -31,17 +28,13 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
 
     private val binding: FragmentWeatherBinding by viewBinding(CreateMethod.INFLATE)
 
-    private var location: Location? = null
-
     @Inject
     lateinit var weatherPresenterFactory: WeatherPresenterFactory
+
 
     private val weatherPresenter: WeatherPresenter by lazy {
         weatherPresenterFactory.create()
     }
-
-    private val currentDate = LocalDateTime.now()
-    private val form = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
 
     override fun onAttach(context: Context) {
         (context.applicationContext as WeatherApplication).appComponent.inject(this)
@@ -63,63 +56,52 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
 
     override fun showTodayForecast() {
         binding.successContainer.visibility = View.VISIBLE
-
-        weatherPresenter.showTodayForecast(
-            location?.let { getCurrentLatitude(it) } ?: 55.7522,
-            location?.let { getCurrentLongitude(it) } ?: 37.6173,
-            form.format(currentDate),
-            form.format(currentDate)
-        )
-
+        todayForecast()
     }
 
     override fun showNextSixDaysForecast() {
         binding.successContainer.visibility = View.VISIBLE
 
-        weatherPresenter.showNextSixDaysForecast(
-            location?.let { getCurrentLatitude(it) } ?: 55.7522,
-            location?.let { getCurrentLongitude(it) } ?: 37.6173,
-        )
     }
 
     @SuppressLint("CheckResult")
-    fun getCurrentLatitude(location: Location): Double {
+    private fun todayForecast() {
         RxPermissions(this)
             .request(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
-            .subscribe { granted ->
-                if (granted) {
-                    location.getLastLatitude()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "No Location permissions",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
-            }
-        return location.getLastLatitude() ?: 55.7522
+            .subscribe(
+                ::isPermissionGranted,
+                ::isPermissionsNotGranted
+            )
     }
 
-    @SuppressLint("CheckResult")
-    fun getCurrentLongitude(location: Location): Double {
-        RxPermissions(this)
-            .request(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            .subscribe { granted ->
-                if (granted) {
-                    location.getLastLongitude()
-                } else {
-                    Toast.makeText(requireContext(), "No Location permissions", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-        return location.getLastLongitude() ?: 37.6173
+//    @SuppressLint("CheckResult")
+//    fun sixDaysForecast() {
+//        RxPermissions(this)
+//            .request(
+//                Manifest.permission.ACCESS_FINE_LOCATION,
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            )
+//            .subscribe(
+//                ::
+//            )
+//
+//    }
+
+
+    private fun isPermissionGranted(granted: Boolean) {
+        weatherPresenter.showTodayForecast()
+    }
+
+    private fun isPermissionsNotGranted(error: Throwable) {
+        Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    private fun bindInformation(weather: Weather) {
+
     }
 
     override fun showError(message: String) =

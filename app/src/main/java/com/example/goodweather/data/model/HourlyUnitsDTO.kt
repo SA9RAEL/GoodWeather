@@ -10,7 +10,7 @@ data class HourlyUnitsDTO(
     @SerializedName("time")
     val time: String,
     @SerializedName("windspeed_10m")
-    val windSpeed_10m: String,
+    val windSpeed10m: String,
     @SerializedName("weathercode")
     val weathercode: String
 )

@@ -13,26 +13,22 @@ import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
 
-@InjectViewState
+@InjectViewState(view = ForecastView::class)
 class WeatherPresenter @AssistedInject constructor(
     private val weatherRepository: WeatherRepository
 ) : MvpPresenter<ForecastView>() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    fun showTodayForecast(
-        latitude: Double,
-        longitude: Double,
-        startDate: String,
-        endDate: String
-    ) {
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        showTodayForecast()
+    }
+
+
+    fun showTodayForecast() {
         weatherRepository
-            .getForecast(
-                latitude = latitude,
-                longitude = longitude,
-                startDate = startDate,
-                endDate = endDate
-            )
+            .getForecast()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -41,22 +37,19 @@ class WeatherPresenter @AssistedInject constructor(
             ).addTo(compositeDisposable)
     }
 
-    fun showNextSixDaysForecast(
-        latitude: Double,
-        longitude: Double
-    ) {
-        weatherRepository
-            .getNextSixDaysForecast(
-                latitude = latitude,
-                longitude = longitude
-            )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                ::nextSixDaysForecastRequestSuccess,
-                ::forecastRequestError
-            ).addTo(compositeDisposable)
-    }
+//    fun showNextSixDaysForecast(
+//        latitude: Double,
+//        longitude: Double
+//    ) {
+//        weatherRepository
+//            .getNextSixDaysForecast()
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                ::nextSixDaysForecastRequestSuccess,
+//                ::forecastRequestError
+//            ).addTo(compositeDisposable)
+//    }
 
 
     private fun todayForecastRequestSuccess(weatherInfoDTO: WeatherInfoDTO) {
