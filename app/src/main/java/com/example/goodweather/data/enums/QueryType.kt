@@ -1,6 +1,6 @@
 package com.example.goodweather.data.enums
 
 enum class QueryType(val title: String) {
-    TEMPERATURE2M("temperature_2m"),
-    PASTDAYS("10")
+    REQUIRED_PARAMS("temperature_2m,precipitation,weathercode,windspeed_10m"),
+    CURRENT_WEATHER("true")
 }

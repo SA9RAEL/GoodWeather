@@ -1,6 +1,7 @@
 package com.example.goodweather.di
 
 import android.content.Context
+import com.example.goodweather.presentation.WeatherFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -16,6 +17,7 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
-    
 
+    fun inject(fragment: WeatherFragment)
+    
 }
