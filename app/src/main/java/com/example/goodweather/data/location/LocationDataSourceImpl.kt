@@ -13,14 +13,17 @@ class LocationDataSourceImpl @Inject constructor(
     private val context: Context
 ) : LocationDataSource {
 
-    override fun getLocation(): Single<MyLocation> {
-        (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).apply {
-            getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let { location ->
-                return Single.just(
-                    MyLocation(
-                        latitude = location.latitude, longitude = location.longitude
+    override fun getLocation(isGranted: Boolean): Single<MyLocation> {
+        val locationManager = (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
+        locationManager.apply {
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && isGranted) {
+                getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let { location ->
+                    return Single.just(
+                        MyLocation(
+                            latitude = location.latitude, longitude = location.longitude
+                        )
                     )
-                )
+                }
             }
         }
         return Single.just(MyLocation(latitude = DEFAULT_LATITUDE, longitude = DEFAULT_LONGITUDE))

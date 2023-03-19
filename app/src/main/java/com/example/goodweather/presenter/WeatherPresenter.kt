@@ -5,6 +5,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.example.goodweather.R
 import com.example.goodweather.data.model.WeatherInfoDTO
 import com.example.goodweather.domain.repository.WeatherRepository
+import com.example.goodweather.presentation.viewmodel.model.Weather
 import com.example.goodweather.presentation.viewmodel.view.ForecastView
 import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -20,15 +21,9 @@ class WeatherPresenter @AssistedInject constructor(
 
     private val compositeDisposable = CompositeDisposable()
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        showTodayForecast()
-    }
-
-
-    fun showTodayForecast() {
-        weatherRepository
-            .getForecast()
+    fun showTodayForecast(isGranted: Boolean) {
+         weatherRepository
+            .getForecast(isGranted)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -52,7 +47,7 @@ class WeatherPresenter @AssistedInject constructor(
 //    }
 
 
-    private fun todayForecastRequestSuccess(weatherInfoDTO: WeatherInfoDTO) {
+    private fun todayForecastRequestSuccess(weather: Weather) {
         viewState.showTodayForecast()
     }
 

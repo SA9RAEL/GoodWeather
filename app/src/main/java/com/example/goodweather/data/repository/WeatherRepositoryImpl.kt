@@ -1,22 +1,26 @@
 package com.example.goodweather.data.repository
 
 import com.example.goodweather.data.date.CurrentDate
-import com.example.goodweather.data.location.LocationDataSourceImpl
+import com.example.goodweather.data.location.LocationDataSource
 import com.example.goodweather.data.model.WeatherInfoDTO
 import com.example.goodweather.data.network.ForecastApiDataSource
 import com.example.goodweather.domain.repository.WeatherRepository
+import com.example.goodweather.presentation.viewmodel.mapper.WeatherInfoMapper
+import com.example.goodweather.presentation.viewmodel.model.Weather
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
     private val forecastApiDataSource: ForecastApiDataSource,
-    private val locationDataSourceImpl: LocationDataSourceImpl
+    private val locationDataSourceImpl: LocationDataSource,
+    private val mapper: WeatherInfoMapper
 ) : WeatherRepository {
 
     override fun getForecast(
-    ): Single<WeatherInfoDTO> {
+        isGranted: Boolean
+    ): Single<Weather> {
         return locationDataSourceImpl
-            .getLocation()
+            .getLocation(isGranted)
             .flatMap { location ->
                 forecastApiDataSource.todayForecast(
                     latitude = location.latitude,
@@ -24,6 +28,9 @@ class WeatherRepositoryImpl @Inject constructor(
                     startDate = CurrentDate.form.format(CurrentDate.currentDate),
                     endDate = CurrentDate.form.format(CurrentDate.currentDate)
                 )
+            }
+            .map { dto ->
+                mapper(dto.currentWeatherDTO)
             }
     }
 

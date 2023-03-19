@@ -15,7 +15,8 @@ interface ForecastApiService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("start_date") startDate: String,
-        @Query("end_date") endDate: String
+        @Query("end_date") endDate: String,
+        @Query("current_weather") currentWeather: Boolean = true,
     ): Single<WeatherInfoDTO>
 
     @GET("v1/forecast")
