@@ -15,12 +15,15 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.example.goodweather.R
 import com.example.goodweather.WeatherApplication
 import com.example.goodweather.data.const.ERROR
+import com.example.goodweather.data.location.Location
 import com.example.goodweather.databinding.FragmentWeatherBinding
-import com.example.goodweather.presentation.viewmodel.model.Weather
 import com.example.goodweather.presentation.viewmodel.view.ForecastView
 import com.example.goodweather.presenter.WeatherPresenter
 import com.example.goodweather.presenter.WeatherPresenterFactory
 import com.tbruyelle.rxpermissions3.RxPermissions
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -100,9 +103,6 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
             .show()
     }
 
-    private fun bindInformation(weather: Weather) {
-
-    }
 
     override fun showError(message: String) =
         with(binding) {

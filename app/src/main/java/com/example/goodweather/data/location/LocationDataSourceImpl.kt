@@ -5,14 +5,12 @@ import android.content.Context
 import android.location.LocationManager
 import com.example.goodweather.data.const.DEFAULT_LATITUDE
 import com.example.goodweather.data.const.DEFAULT_LONGITUDE
-import com.google.android.gms.location.FusedLocationProviderClient
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
 class LocationDataSourceImpl @Inject constructor(
-    private val context: Context,
-    private var fusedLocationProviderClient: FusedLocationProviderClient
+    private val context: Context
 ) : LocationDataSource {
 
     override fun getLocation(): Single<MyLocation> {
