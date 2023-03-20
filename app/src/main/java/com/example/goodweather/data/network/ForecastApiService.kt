@@ -10,19 +10,21 @@ import java.util.*
 interface ForecastApiService {
 
     @GET("v1/forecast")
-    fun getTodayForecast(
-        @Query("hourly", encoded = true) hourlyUnits: String = QueryType.REQUIRED_PARAMS.title,
+    fun todayForecast(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("start_date") startDate: String,
-        @Query("end_date") endDate: String,
-        @Query("current_weather") currentWeather: Boolean = true,
+        @Query("hourly") hourlyUnits: String = QueryType.HOURLY.title,
+        @Query("daily", encoded = true) daily: String = QueryType.DAILY.title,
+        @Query("current_weather") currentWeather: String = QueryType.CURRENT_WEATHER.title,
+        @Query("forecast_days") forecastDays: String = QueryType.FORECAST_ONE_DAY.title,
+        @Query("timezone") timeZone: String = QueryType.TIMEZONE.title
     ): Single<WeatherInfoDTO>
 
     @GET("v1/forecast")
-    fun getNextSixDaysForecast(
-        @Query("hourly", encoded = true) hourlyUnits: String = QueryType.REQUIRED_PARAMS.title,
+    fun sevenDaysForecast(
+        @Query("hourly", encoded = true) hourlyUnits: String = QueryType.HOURLY.title,
         @Query("current_weather") currentWeather: String = QueryType.CURRENT_WEATHER.title,
+        @Query("forecast_day") forecastDay: String = QueryType.FORECAST_SEVEN_DAYS.title,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ): Single<List<WeatherInfoDTO>>

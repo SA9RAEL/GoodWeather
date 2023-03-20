@@ -1,6 +1,5 @@
 package com.example.goodweather.data.repository
 
-import com.example.goodweather.data.date.CurrentDate
 import com.example.goodweather.data.location.LocationDataSource
 import com.example.goodweather.data.model.WeatherInfoDTO
 import com.example.goodweather.data.network.ForecastApiDataSource
@@ -13,7 +12,7 @@ import javax.inject.Inject
 class WeatherRepositoryImpl @Inject constructor(
     private val forecastApiDataSource: ForecastApiDataSource,
     private val locationDataSourceImpl: LocationDataSource,
-    private val mapper: WeatherInfoMapper
+    private val weatherInfoMapper: WeatherInfoMapper
 ) : WeatherRepository {
 
     override fun getForecast(
@@ -24,13 +23,11 @@ class WeatherRepositoryImpl @Inject constructor(
             .flatMap { location ->
                 forecastApiDataSource.todayForecast(
                     latitude = location.latitude,
-                    longitude = location.longitude,
-                    startDate = CurrentDate.form.format(CurrentDate.currentDate),
-                    endDate = CurrentDate.form.format(CurrentDate.currentDate)
+                    longitude = location.longitude
                 )
             }
-            .map { dto ->
-                mapper(dto.currentWeatherDTO)
+            .map { weatherInfoDTO ->
+                weatherInfoMapper(weatherInfoDTO.currentWeatherDTO)
             }
     }
 

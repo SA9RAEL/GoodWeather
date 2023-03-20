@@ -2,7 +2,7 @@ package com.example.goodweather.presenter
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.example.goodweather.R
+import com.example.goodweather.data.const.ERROR
 import com.example.goodweather.data.model.WeatherInfoDTO
 import com.example.goodweather.domain.repository.WeatherRepository
 import com.example.goodweather.presentation.viewmodel.model.Weather
@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.HttpException
 
-@InjectViewState(view = ForecastView::class)
+@InjectViewState
 class WeatherPresenter @AssistedInject constructor(
     private val weatherRepository: WeatherRepository
 ) : MvpPresenter<ForecastView>() {
@@ -28,9 +28,34 @@ class WeatherPresenter @AssistedInject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 ::todayForecastRequestSuccess,
-                ::forecastRequestError
+                ::requestError
             ).addTo(compositeDisposable)
     }
+
+    private fun todayForecastRequestSuccess(weather: Weather) {
+        viewState.bindInformation(weather)
+        viewState.showTodayForecast()
+    }
+
+    private fun sevenDaysForecastRequestSuccess(listWeatherInfoDTO: List<WeatherInfoDTO>) {
+        viewState.showNextSevenDaysForecast()
+    }
+
+    private fun requestError(error: Throwable) {
+        if (error is HttpException) {
+            val responseBody = error.response()?.errorBody()
+            viewState.showError(message = responseBody?.string().orEmpty())
+        } else {
+            viewState.showError(message = ERROR)
+        }
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.clear()
+        super.onDestroy()
+    }
+
+}
 
 //    fun showNextSixDaysForecast(
 //        latitude: Double,
@@ -45,28 +70,3 @@ class WeatherPresenter @AssistedInject constructor(
 //                ::forecastRequestError
 //            ).addTo(compositeDisposable)
 //    }
-
-
-    private fun todayForecastRequestSuccess(weather: Weather) {
-        viewState.showTodayForecast()
-    }
-
-    private fun nextSixDaysForecastRequestSuccess(listWeatherInfoDTO: List<WeatherInfoDTO>) {
-        viewState.showNextSixDaysForecast()
-    }
-
-    private fun forecastRequestError(error: Throwable) {
-        if (error is HttpException) {
-            val responseBody = error.response()?.errorBody()
-            viewState.showError(message = responseBody?.string().orEmpty())
-        } else {
-            viewState.showError(message = R.string.no_internet_connection)
-        }
-    }
-
-    override fun onDestroy() {
-        compositeDisposable.clear()
-        super.onDestroy()
-    }
-
-}

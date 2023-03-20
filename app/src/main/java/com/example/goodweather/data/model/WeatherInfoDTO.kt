@@ -7,6 +7,10 @@ data class WeatherInfoDTO(
     val currentWeatherDTO: CurrentWeatherDTO,
     @SerializedName("elevation")
     val elevation: Double,
+    @SerializedName("daily")
+    val daily: DailyDTO,
+    @SerializedName("daily_units")
+    val dailyUnits: DailyUnitsDTO,
     @SerializedName("generationtime_ms")
     val generationTimeMs: Double,
     @SerializedName("hourly")

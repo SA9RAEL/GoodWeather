@@ -24,10 +24,11 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/material_card_view"
         style="@style/MyCardView"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:layout_marginTop="114dp"
+        android:layout_marginEnd="55dp"
         app:cardBackgroundColor="@color/background_color"
         app:cardElevation="20dp">
 
@@ -55,62 +56,87 @@
 
             <ImageView
                 android:id="@+id/weather_icon"
-                android:layout_width="89dp"
-                android:layout_height="76dp"
-                android:layout_marginStart="68dp"
-                android:layout_marginBottom="20dp"
+                android:layout_width="88dp"
+                android:layout_height="72dp"
+                android:layout_marginStart="74dp"
+                android:layout_marginTop="56dp"
                 android:src="@drawable/ic_rainy"
-                app:layout_constraintBottom_toTopOf="@id/weather_result"
                 app:layout_constraintEnd_toStartOf="@id/today_text_view"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/today_text_view" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/temperature_text_view"
-                android:layout_width="84dp"
-                android:layout_height="89dp"
-                android:layout_marginStart="18dp"
-                android:fontFamily="@font/poppins_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="77dp"
+                android:layout_marginStart="144dp"
+                android:layout_marginTop="46dp"
                 android:textColor="@color/main_color"
-                android:textSize="70sp"
-                app:layout_constraintBottom_toTopOf="@id/weather_result"
-                app:layout_constraintStart_toEndOf="@id/weather_icon"
-                tools:text="13" />
+                android:textSize="54sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="-2.6" />
 
             <ImageView
                 android:layout_width="16dp"
-                android:layout_height="15dp"
-                android:layout_marginStart="76dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="2dp"
                 android:layout_marginEnd="72dp"
                 android:src="@drawable/ic_degree"
-                app:layout_constraintStart_toEndOf="@id/weather_icon"
+                app:layout_constraintStart_toEndOf="@id/temperature_text_view"
                 app:layout_constraintTop_toTopOf="@id/weather_icon" />
 
             <TextView
-                android:id="@+id/weather_result"
+                android:id="@+id/max_temp_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/poppins_medium"
+                android:text="@string/h"
                 android:textColor="@color/main_color"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/today_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/temperature_text_view"
-                tools:text="Rainy" />
+                tools:text="H: -12" />
 
             <TextView
-                android:id="@+id/city_text_view"
+                android:id="@+id/min_temp_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/l"
+                android:textColor="@color/main_color"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/today_text_view"
+                app:layout_constraintStart_toEndOf="@id/max_temp_tv"
+                app:layout_constraintTop_toBottomOf="@+id/temperature_text_view"
+                tools:text="L: -12" />
+
+            <TextView
+                android:id="@+id/wind_direction_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:layout_marginEnd="38dp"
                 android:fontFamily="@font/poppins_medium"
+                android:text="@string/wind_direction"
                 android:textColor="@color/main_color"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weather_result"
-                tools:text="California" />
+                app:layout_constraintTop_toBottomOf="@+id/max_temp_tv" />
+
+            <TextView
+                android:id="@+id/wind_direction_result_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/main_color"
+                app:layout_constraintStart_toEndOf="@id/wind_direction_text_view"
+                app:layout_constraintTop_toBottomOf="@id/max_temp_tv"
+                tools:text="120" />
 
             <TextView
                 android:id="@+id/wind_speed"
@@ -123,7 +149,8 @@
                 android:textColor="@color/main_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/city_text_view" />
+                app:layout_constraintTop_toBottomOf="@id/wind_direction_text_view"
+                app:layout_goneMarginTop="8dp" />
 
             <TextView
                 android:id="@+id/wind_speed_result"
@@ -144,11 +171,12 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
+                android:paddingBottom="6dp"
                 android:textColor="@color/main_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/city_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/wind_direction_text_view"
                 tools:text="23 Feb 2023" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -158,7 +186,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible"
-            tools:visibility="visible">
+            tools:visibility="invisible">
 
             <ImageView
                 android:id="@+id/error_icon"
