@@ -10,21 +10,17 @@ class ForecastApiDataSource @Inject constructor(
     fun todayForecast(
         latitude: Double,
         longitude: Double,
-        startDate: String,
-        endDate: String
-    ): Single<WeatherInfoDTO> =
-        apiService.getTodayForecast(
+        ): Single<WeatherInfoDTO> =
+        apiService.todayForecast(
             latitude = latitude,
-            longitude = longitude,
-            startDate = startDate,
-            endDate = endDate
+            longitude = longitude
         )
 
     fun nextSixDaysForecast(
         latitude: Double,
         longitude: Double
     ): Single<List<WeatherInfoDTO>> =
-        apiService.getNextSixDaysForecast(
+        apiService.sevenDaysForecast(
             latitude = latitude,
             longitude = longitude
         )

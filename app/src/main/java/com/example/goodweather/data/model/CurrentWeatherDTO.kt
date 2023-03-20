@@ -7,10 +7,10 @@ data class CurrentWeatherDTO(
     val temperature: Double,
     @SerializedName("time")
     val time: String,
-    @SerializedName("weather_code")
+    @SerializedName("weathercode")
     val weatherCode: Int,
-    @SerializedName("wind_direction")
+    @SerializedName("winddirection")
     val windDirection: Double,
-    @SerializedName("wind_speed")
+    @SerializedName("windspeed")
     val windSpeed: Double
 )

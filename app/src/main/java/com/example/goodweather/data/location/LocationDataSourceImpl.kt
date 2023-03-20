@@ -14,9 +14,8 @@ class LocationDataSourceImpl @Inject constructor(
 ) : LocationDataSource {
 
     override fun getLocation(isGranted: Boolean): Single<MyLocation> {
-        val locationManager = (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
-        locationManager.apply {
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && isGranted) {
+        (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).apply {
+            if (isProviderEnabled(LocationManager.GPS_PROVIDER) && isGranted) {
                 getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let { location ->
                     return Single.just(
                         MyLocation(

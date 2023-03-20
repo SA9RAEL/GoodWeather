@@ -1,6 +1,5 @@
 package com.example.goodweather.presentation
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,16 +11,14 @@ import android.widget.Toast
 import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arellomobile.mvp.MvpAppCompatFragment
-import com.example.goodweather.R
 import com.example.goodweather.WeatherApplication
-import com.example.goodweather.data.const.ERROR
 import com.example.goodweather.databinding.FragmentWeatherBinding
+import com.example.goodweather.presentation.viewmodel.model.Weather
 import com.example.goodweather.presentation.viewmodel.view.ForecastView
 import com.example.goodweather.presenter.WeatherPresenter
 import com.example.goodweather.presenter.WeatherPresenterFactory
 import com.tbruyelle.rxpermissions3.RxPermissions
 import javax.inject.Inject
-
 
 class WeatherFragment : MvpAppCompatFragment(), ForecastView {
 
@@ -29,7 +26,6 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
 
     @Inject
     lateinit var weatherPresenterFactory: WeatherPresenterFactory
-
 
     private val weatherPresenter: WeatherPresenter by lazy {
         weatherPresenterFactory.create()
@@ -49,19 +45,21 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showTodayForecast()
+        todayForecast()
+        weatherPresenter.showTodayForecast(true)
+       // showTodayForecast()
         //showNextSixDaysForecast
     }
 
-    override fun showTodayForecast() {
-        binding.successContainer.visibility = View.VISIBLE
-        todayForecast()
-    }
-
-    override fun showNextSixDaysForecast() {
-        binding.successContainer.visibility = View.VISIBLE
-
-    }
+//    override fun showTodayForecast() {
+//        binding.successContainer.visibility = View.VISIBLE
+//        todayForecast()
+//    }
+//
+//    override fun showNextSevenDaysForecast() {
+//        TODO()
+//
+//    }
 
     @SuppressLint("CheckResult")
     private fun todayForecast() {
@@ -71,8 +69,8 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
             .subscribe(
-                ::isPermissionGranted,
-                ::isPermissionsNotGranted
+                ::permissionGranted,
+                ::permissionsNotGranted
             )
     }
 
@@ -90,28 +88,30 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
 //    }
 
 
-    private fun isPermissionGranted(granted: Boolean) {
+    private fun permissionGranted(granted: Boolean) {
         weatherPresenter.showTodayForecast(granted)
     }
 
-    private fun isPermissionsNotGranted(error: Throwable) {
-        Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT)
-            .show()
+    private fun permissionsNotGranted(error: Throwable) {
+        Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
     }
 
-
-    override fun showError(message: String) =
+    override fun bindInformation(weather: Weather) {
+        binding.successContainer.visibility = View.VISIBLE
         with(binding) {
-            errorContainer.visibility = View.VISIBLE
-            binding.errorTextView.text = ERROR
+            weatherIcon.setImageResource(weather.weatherCode)
+            temperatureTextView.text = weather.temperature.toString()
+            windDirectionResultTextView.text = weather.windDirection.toString()
+            windSpeedResult.text = weather.windSpeed.toString()
+            dateTextView.text = weather.time.dropLast(6).replace("-", "/")
         }
+    }
 
-
-    override fun showError(message: Int) =
-        with(binding) {
-            errorContainer.visibility = View.VISIBLE
-            errorTextView.text = getString(R.string.no_internet_connection)
-        }
+//    override fun showError(message: String) =
+//        with(binding) {
+//            errorContainer.visibility = View.VISIBLE
+//            binding.errorTextView.text = ERROR
+//        }
 
     override fun onDestroyView() {
         weatherPresenter.onDestroy()
