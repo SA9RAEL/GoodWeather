@@ -11,6 +11,8 @@ import android.widget.Toast
 import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arellomobile.mvp.MvpAppCompatFragment
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.goodweather.WeatherApplication
 import com.example.goodweather.data.const.ERROR
 import com.example.goodweather.databinding.FragmentWeatherBinding
@@ -28,9 +30,12 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
     @Inject
     lateinit var weatherPresenterFactory: WeatherPresenterFactory
 
-    private val weatherPresenter: WeatherPresenter by lazy {
+    @InjectPresenter
+    lateinit var weatherPresenter: WeatherPresenter
+
+    @ProvidePresenter
+    fun provideWeatherPresenter(): WeatherPresenter =
         weatherPresenterFactory.create()
-    }
 
     override fun onAttach(context: Context) {
         (context.applicationContext as WeatherApplication).appComponent.inject(this)
@@ -54,10 +59,12 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
      * View implementation
      */
     override fun showTodayForecast() {
-        todayForecast()
+        checkLocationPermission()
     }
 
-    override fun showNextSevenDaysForecast() { TODO() }
+    override fun showNextSevenDaysForecast() {
+        TODO()
+    }
 
     override fun showError(message: String) =
         with(binding) {
@@ -77,11 +84,10 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
     }
 
     @SuppressLint("CheckResult")
-    private fun todayForecast() {
+    private fun checkLocationPermission() {
         RxPermissions(this)
             .request(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
             .subscribe(
                 ::permissionGranted,

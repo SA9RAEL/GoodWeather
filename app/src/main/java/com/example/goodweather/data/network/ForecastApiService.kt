@@ -14,7 +14,6 @@ interface ForecastApiService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("hourly") hourlyUnits: String = QueryType.HOURLY.title,
-        @Query("daily", encoded = true) daily: String = QueryType.DAILY.title,
         @Query("current_weather") currentWeather: String = QueryType.CURRENT_WEATHER.title,
         @Query("forecast_days") forecastDays: String = QueryType.FORECAST_ONE_DAY.title,
         @Query("timezone") timeZone: String = QueryType.TIMEZONE.title

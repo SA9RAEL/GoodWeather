@@ -3,7 +3,6 @@ package com.example.goodweather.presenter
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.goodweather.data.const.ERROR
-import com.example.goodweather.data.model.WeatherInfoDTO
 import com.example.goodweather.domain.repository.WeatherRepository
 import com.example.goodweather.presentation.viewmodel.model.Weather
 import com.example.goodweather.presentation.viewmodel.view.ForecastView
@@ -18,7 +17,7 @@ import retrofit2.HttpException
 class WeatherPresenter @AssistedInject constructor(
     private val weatherRepository: WeatherRepository
 ) : MvpPresenter<ForecastView>() {
-
+    
     private val compositeDisposable = CompositeDisposable()
 
     fun showTodayForecast(isGranted: Boolean) {
@@ -34,10 +33,9 @@ class WeatherPresenter @AssistedInject constructor(
 
     private fun todayForecastRequestSuccess(weather: Weather) {
         viewState.bindInformation(weather)
-        viewState.showTodayForecast()
     }
 
-    private fun sevenDaysForecastRequestSuccess(listWeatherInfoDTO: List<WeatherInfoDTO>) {
+    private fun sevenDaysForecastRequestSuccess() {
         viewState.showNextSevenDaysForecast()
     }
 
