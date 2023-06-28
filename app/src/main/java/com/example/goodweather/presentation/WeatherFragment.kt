@@ -67,13 +67,13 @@ class WeatherFragment : MvpAppCompatFragment(), ForecastView {
     }
 
     override fun showError(message: String) =
-        with(binding) {
+        with(binding.included) {
             errorContainer.visibility = View.VISIBLE
-            binding.errorTextView.text = ERROR
+            errorTextView.text = ERROR
         }
 
     override fun bindInformation(weather: Weather) {
-        with(binding) {
+        with(binding.included) {
             successContainer.visibility = View.VISIBLE
             weatherIcon.setImageResource(weather.weatherCode)
             temperatureTextView.text = weather.temperature.toString()
